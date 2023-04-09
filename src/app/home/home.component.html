@@ -1,0 +1,42 @@
+<div class="container">
+    <div>
+        <mat-card>
+            <mat-card-header>
+                <mat-card-title>Variable String</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+                <form [formGroup]="form">
+                    <mat-form-field>
+                        <mat-label>Enter Text</mat-label>
+                        <input matInput formControlName="text" (input)="readOutput()">
+                    </mat-form-field>
+                    <div>
+                        <div>
+                            <mat-form-field>
+                                <textarea matInput rows="15" placeholder="Enter JSON...." class="variable-textarea"
+                                    formControlName="json"></textarea>
+                            </mat-form-field>
+                        </div>
+                    </div>
+                </form>
+            </mat-card-content>
+        </mat-card>
+    </div>
+    <div class="results">
+        <mat-card>
+            <mat-card-header>
+                <mat-card-title>Preview</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+                <div class="value">
+                    <p>{{value}}</p>
+                </div>
+                <mat-card-actions>
+                    <button mat-flat-button color="primary" [disabled]="!form.valid" type="submit" (click)="save()">
+                        Save
+                    </button>
+                </mat-card-actions>
+            </mat-card-content>
+        </mat-card>
+    </div>
+</div>

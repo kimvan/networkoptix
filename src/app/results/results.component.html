@@ -1,0 +1,27 @@
+<div class="container">
+    <mat-card>
+        <mat-card-header>
+            <mat-card-title>Results</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+            <div class="results-container">
+                <div class="results-view">
+                    <p>{{results$ | async}}</p>
+                </div>
+                <div class="form-container">
+                    <form [formGroup]="form">
+                        <mat-form-field>
+                            <mat-label>Enter File Name</mat-label>
+                            <input matInput formControlName="fileName">
+                        </mat-form-field>
+                    </form>
+                </div>
+            </div>
+        </mat-card-content>
+        <mat-card-actions class="actions">
+            <button mat-flat-button color="primary" [disabled]="!form.valid" type="submit" (click)="download()">Download
+                File</button>
+            <button mat-flat-button color="primary" (click)="viewAll()">View All Results</button>
+        </mat-card-actions>
+    </mat-card>
+</div>
