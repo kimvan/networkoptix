@@ -6,10 +6,10 @@ import { BehaviorSubject, Observable } from 'rxjs';
 })
 export class ResultsService {
   private _results: BehaviorSubject<string> = new BehaviorSubject(<string>'');
-  public readonly results: Observable<string> = this._results.asObservable();
+  public readonly results$: Observable<string> = this._results.asObservable();
 
   private _allResults: BehaviorSubject<string[]> = new BehaviorSubject(<string[]>[]);
-  public readonly allResults: Observable<string[]> = this._allResults.asObservable();
+  public readonly allResults$: Observable<string[]> = this._allResults.asObservable();
 
   constructor() { }
 

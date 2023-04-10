@@ -10,7 +10,7 @@ import { Router } from '@angular/router';
   styleUrls: ['./results.component.scss']
 })
 export class ResultsComponent implements OnInit {
-  results$: Observable<string> = this.resultsService.results;
+  results$: Observable<string> = this.resultsService.results$;
   form!: FormGroup;
   result!: string;
 

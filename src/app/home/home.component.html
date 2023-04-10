@@ -1,5 +1,5 @@
 <div class="container">
-    <div>
+    <div class="form-container">
         <mat-card>
             <mat-card-header>
                 <mat-card-title>Variable String</mat-card-title>
@@ -8,13 +8,16 @@
                 <form [formGroup]="form">
                     <mat-form-field>
                         <mat-label>Enter Text</mat-label>
-                        <input matInput formControlName="text" (input)="readOutput()">
+                        <input matInput formControlName="text" (input)="readInput()">
                     </mat-form-field>
                     <div>
                         <div>
-                            <mat-form-field>
+                            <mat-form-field class="text-area">
                                 <textarea matInput rows="15" placeholder="Enter JSON...." class="variable-textarea"
-                                    formControlName="json"></textarea>
+                                    formControlName="json" (input)="readInput()"></textarea>
+                                    <mat-error *ngIf="form.get('json')?.errors && (form.get('json')?.dirty || form.get('json')?.touched)">
+                                        Please enter valid JSON string
+                                    </mat-error>
                             </mat-form-field>
                         </div>
                     </div>

@@ -1,19 +1,21 @@
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, AbstractControl, ValidatorFn, ValidationErrors } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Observable, take } from 'rxjs';
 import { ResultsService } from '../shared/results.service';
+import { jsonValidator } from '../shared/json.validator';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']
 })
+
 export class HomeComponent {
 
   form!: FormGroup;
   value!: string;
-  allResults$: Observable<string[]> = this.resultsService.allResults;
+  allResults$: Observable<string[]> = this.resultsService.allResults$;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -24,29 +26,48 @@ export class HomeComponent {
   ngOnInit(): void {
     this.form = this.formBuilder.group({
       text: [{ value: null, disabled: false }],
-      json: [null, [Validators.required]]
-    })
-  }
-
-  readOutput(): void {
-    const regex = /%[A-Za-z]+%/g;
-    this.value = this.form.get('text')?.value.replace(regex, (variable: string) => {
-      return this.getVariableValue(variable);
+      json: [null, [Validators.required, jsonValidator()]]
     });
   }
 
-  getVariableValue(variable: string): unknown {
-    const jsonString = this.form.get('json')?.value;
-    const jsonObject = JSON.parse(jsonString);
+  readInput(): void {
+    const regex = /%[A-Za-z]+%/g;
+    const jsonVal = this.form.get('json')?.value;
+    const textVal = this.form.get('text')?.value;
 
-    const found = Object.keys(jsonObject)
+    if (jsonVal && textVal) {
+      this.value = textVal.replace(regex, (variable: string) => {
+        if (this.getVariableValue(variable)) {
+          return this.getVariableValue(variable);
+        } else {
+          return variable;
+        }
+      });
+    } else {
+      this.value = textVal;
+    }
+  }
+
+  getVariableValue(variable: string): unknown {
+    const jsonObject = this.isValidJSON(this.form.get('json')?.value);
+
+    const found = !jsonObject? null : Object.keys(jsonObject)
       .filter(key => key === variable)
       .reduce((obj, key) => {
         const variableValue = jsonObject[key];
         return variableValue;
-      }, {});
+      }, null);
 
     return found;
+  }
+
+  isValidJSON(stringToValidate: string) {
+    try {
+      JSON.parse(stringToValidate);
+    } catch (e) {
+      return null;
+    }
+    return JSON.parse(stringToValidate);
   }
 
   save(): void {

@@ -8,7 +8,7 @@ import { ResultsService } from '../shared/results.service';
   styleUrls: ['./view-results.component.scss']
 })
 export class ViewResultsComponent {
-  allResults$: Observable<string[]> = this.resultsService.allResults;
+  allResults$: Observable<string[]> = this.resultsService.allResults$;
 
   constructor(
     private resultsService: ResultsService,
