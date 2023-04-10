@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Observable, ReplaySubject, take, takeUntil } from 'rxjs';
 import { ResultsService } from '../shared/results.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -9,7 +9,9 @@ import { Router } from '@angular/router';
   templateUrl: './results.component.html',
   styleUrls: ['./results.component.scss']
 })
-export class ResultsComponent implements OnInit {
+export class ResultsComponent implements OnInit, OnDestroy {
+  private destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
+  
   results$: Observable<string> = this.resultsService.results$;
   form!: FormGroup;
   result!: string;
@@ -25,7 +27,13 @@ export class ResultsComponent implements OnInit {
       fileName: [{ value: null, disabled: false }, [Validators.required]],
     })
 
-    this.results$.subscribe(res => {
+    // this.results$.subscribe(res => {
+    //   this.result = res;
+    // })
+
+    this.results$
+    .pipe(takeUntil(this.destroyed$))
+    .subscribe(res => {
       this.result = res;
     })
   }
@@ -52,6 +60,12 @@ export class ResultsComponent implements OnInit {
 
   viewAll(): void {
     this.router.navigate(['../', 'view-results']);
+  }
+
+  ngOnDestroy() {
+    this.resultsService.updateResults('');
+    this.destroyed$.next(true);
+    this.destroyed$.complete();
   }
 
 }
